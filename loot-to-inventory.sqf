@@ -29,6 +29,12 @@ if (typeOf _target isEqualTo "") then {
             removeBackpackGlobal _entity;
         };
 
+        private _goggles = goggles _entity;
+        if !(_goggles isEqualTo "") then {
+            _items pushBack _goggles;
+            removeGoggles _entity;
+        };
+
         private _uniform = uniform _entity;
         if !(_uniform isEqualTo "") then {
             _items pushBack _uniform;
