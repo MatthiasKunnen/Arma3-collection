@@ -52,7 +52,7 @@ if (typeOf _target isEqualTo "") then {
         {_entity unlinkItem _x;} forEach assignedItems _entity; // removeAllAssignedItems does not work properly
     };
 
-    if (alive _entity && (_entity isKindOf "GroundWeaponHolder" || _entity isKindOf "weaponholdersimulated")) then {
+    if (alive _entity && (_entity isKindOf "GroundWeaponHolder" || _entity isKindOf "WeaponHolderSimulated")) then {
         _items append magazineCargo _entity;
         _items append weaponCargo _entity;
         _items append itemCargo _entity;
