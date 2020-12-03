@@ -1,11 +1,12 @@
 // Look at an object with an inventory and execute this locally (sp) or globally (mp).
 
 _target = cursortarget;
-_potential = nearestObjects [player, ["GroundWeaponHolder", "weaponholdersimulated", "Man"], 200];
+_radius = 50;
+_nearObjects = nearestObjects [player, ["GroundWeaponHolder", "WeaponHolderSimulated", "Man"], _radius];
 
 if (typeOf _target isEqualTo "") then {
     systemChat "No target";
-    _potential = [];
+    _nearObjects = [];
 };
 
 {
@@ -70,4 +71,4 @@ if (typeOf _target isEqualTo "") then {
     {
         _target addBackpackCargoGlobal [_x, 1];
     } forEach _backpacks;
-} forEach _potential;
+} forEach _nearObjects;
