@@ -1,3 +1,5 @@
+// Look at an object with an inventory and execute this locally (sp) or globally (mp).
+
 _target = cursortarget;
 _potential = nearestObjects [player, ["GroundWeaponHolder", "weaponholdersimulated", "Man"], 200];
 
@@ -15,6 +17,7 @@ if (typeOf _target isEqualTo "") then {
         _items append magazines _entity;
         _items append items _entity;
 
+        // Prevent duplication of attachements by getting the base weapon.
         _items append weapons _entity;
         {_entity removeWeapon _x} forEach weapons _entity;
         removeAllWeapons _entity; // To remove magazines, does not remove pistols successfully
@@ -52,7 +55,7 @@ if (typeOf _target isEqualTo "") then {
         _items append magazineCargo _entity;
         _items append weaponCargo _entity;
         _items append itemCargo _entity;
-        // Most weapons already have predetermined scopes etc based on name, dunno what to do bout that
+        // Prevent duplication by getting the base weapon.
         _items append weaponsItemsCargo _entity;
         _backpacks append backpackCargo _entity;
         clearWeaponCargoGlobal _entity;
