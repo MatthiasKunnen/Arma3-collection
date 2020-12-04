@@ -104,14 +104,20 @@ fnc_inherits_from_weapon = {
     };
 
     if (alive _entity && (_entity isKindOf "GroundWeaponHolder" || _entity isKindOf "WeaponHolderSimulated")) then {
+        [_target, _entity] call fnc_extract_weapons;
+        {
+            // Handle things in backpacks/uniforms/vests
+            _backpackName = [_x select 0] call fnc_get_base_vehicle_name;
+            _container = _x select 1;
+            [_target, _container] call fnc_extract_weapons;
+            _items append magazineCargo _container;
+            _items append itemCargo _container;
+            _backpacks append backpackCargo _container;
+            _backpacks pushBack _backpackName;
+        } forEach everyContainer _entity;
+
         _items append magazineCargo _entity;
-        _items append weaponCargo _entity;
         _items append itemCargo _entity;
-        // Prevent duplication by getting the base weapon.
-        _items append weaponsItemsCargo _entity;
-        _backpacks append backpackCargo _entity;
-        clearWeaponCargoGlobal _entity;
-        clearBackpackCargoGlobal _entity;
         deleteVehicle _entity;
     };
 
