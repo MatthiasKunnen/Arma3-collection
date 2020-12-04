@@ -69,12 +69,13 @@ fnc_inherits_from_weapon = {
 
 {
     _items = [];
+    _magazines = [];
     _backpacks = [];
     _entity = _x;
 
     if (_entity isKindOf "Man" && !alive _entity) then {
         [_target, _entity] call fnc_extract_weapons;
-        _items append magazines _entity;
+        _magazines append magazinesAmmo _entity;
 
         {
             // Weapons in backpacks are not removed by fnc_extract_weapons, we have to prevent
@@ -129,13 +130,13 @@ fnc_inherits_from_weapon = {
             _backpackName = [_x select 0] call fnc_get_base_vehicle_name;
             _container = _x select 1;
             [_target, _container] call fnc_extract_weapons;
-            _items append magazineCargo _container;
+            _magazines append magazinesAmmoCargo _container;
             _items append itemCargo _container;
             _backpacks append backpackCargo _container;
             _backpacks pushBack _backpackName;
         } forEach everyContainer _entity;
 
-        _items append magazineCargo _entity;
+        _magazines append magazinesAmmoCargo _entity;
         _items append itemCargo _entity;
         deleteVehicle _entity;
     };
@@ -143,6 +144,10 @@ fnc_inherits_from_weapon = {
     {
         _target addItemCargoGlobal [_x, 1];
     } forEach _items;
+
+    {
+        _target addMagazineAmmoCargo [_x select 0, 1, _x select 1];
+    } forEach _magazines;
 
     {
         _target addBackpackCargoGlobal [_x, 1];
