@@ -25,10 +25,12 @@ fnc_does_vehicle_have_configured_loadout = {
 fnc_get_base_vehicle_name = {
     params ["_vehicle"];
     private _baseCfg = (configFile >> "cfgVehicles");
+    diag_log ["fnc_get_base_vehicle_name", _vehicle];
     private _cfg = _baseCfg >> _vehicle;
 
     while {[_cfg] call fnc_does_vehicle_have_configured_loadout} do {
         private _parent = configName (inheritsFrom (_cfg));
+         diag_log ["fnc_get_base_vehicle_name loop", _parent];
         _cfg = _baseCfg >> _parent;
     };
 
