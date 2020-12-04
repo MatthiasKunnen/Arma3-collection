@@ -1,7 +1,7 @@
 // Look at an object with an inventory and execute this locally (sp) or globally (mp).
 
 _target = cursortarget;
-_radius = 50;
+_radius = 5;
 _nearObjects = nearestObjects [player, ["GroundWeaponHolder", "WeaponHolderSimulated", "Man"], _radius];
 
 if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad") == 0 && alive _target) then {
