@@ -9,10 +9,29 @@ if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad
     _nearObjects = [];
 };
 
+// Returns true if the vehicle has a preconfigured loadout. False otherwise.
+// Example `[configFile >> "cfgVehicles" >> "B_AssaultPack_mcamo_Ammo"] call fn`
+fnc_does_vehicle_have_configured_loadout = {
+    params ["_vehicleConfig"];
+
+    [
+        "TransportMagazines",
+        "TransportWeapons"
+    ] findIf {count ([(_vehicleConfig >> _x), 0] call BIS_fnc_returnChildren) > 0} >= 0
+};
+
 // Returns the base name of the given _vehicle name.
 fnc_get_base_vehicle_name = {
     params ["_vehicle"];
-    configname (inheritsfrom (configFile >> "CfgVehicles" >> _vehicle))
+    _baseCfg = (configFile >> "cfgVehicles");
+    _cfg = _baseCfg >> _vehicle;
+
+    while {[_cfg] call fnc_does_vehicle_have_configured_loadout} do {
+        _parent = configName (inheritsFrom (_cfg));
+        _cfg = _baseCfg >> _parent;
+    };
+
+    configName _cfg
 };
 
 // Put all weapons and their attachments/magazines into the target
