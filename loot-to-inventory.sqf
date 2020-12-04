@@ -9,19 +9,55 @@ if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad
     _nearObjects = [];
 };
 
+// Put all weapons and their attachments/magazines into the target
+fnc_extract_weapons = {
+    params ["_target", "_holder"];
+
+    {
+        _target addWeaponWithAttachmentsCargoGlobal [_x, 1];
+        _holder removeWeaponGlobal (_x select 0);
+    } forEach weaponsItems _holder;
+
+    clearWeaponCargoGlobal _holder;
+};
+
+// Returns true if the item supplied is one that would be returned for a weaponItems call. False
+// otherwise.
+fnc_is_in_weapon_items_list = {
+    params ["_item"];
+
+    // Binoculars and NVGs both extend "Binocular" yet only the binocular is part of weaponItems so
+    // we have to whitelist the NVG.
+    _y = [_item, ["Binocular", "Launcher", "Pistol", "Rifle"]] call fnc_inherits_from_weapon;
+    _n = [_item, ["NVGoggles"]] call fnc_inherits_from_weapon;
+    diag_log ["fnc_is_in_weapon_items_list", _item, _y, _n, _y && !_n];
+
+    _y && !_n;
+};
+
+// Check if a given item inherits from the given list of weapon classes.
+fnc_inherits_from_weapon = {
+    params ["_item", "_classes"];
+
+    (_classes findIf {_item isKindOf [_x, configFile >> "CfgWeapons"]}) >= 0
+};
+
 {
     _items = [];
     _backpacks = [];
     _entity = _x;
 
     if (_entity isKindOf "Man" && !alive _entity) then {
+        [_target, _entity] call fnc_extract_weapons;
         _items append magazines _entity;
-        _items append items _entity;
 
-        // Prevent duplication of attachements by getting the base weapon.
-        _items append weapons _entity;
-        {_entity removeWeapon _x} forEach weapons _entity;
-        removeAllWeapons _entity; // To remove magazines, does not remove pistols successfully
+        {
+            // Weapons in backpacks are not removed by fnc_extract_weapons, we have to prevent
+            // duplication.
+            if (not ([_x] call fnc_is_in_weapon_items_list)) then {
+                _items pushBack _x;
+            };
+        } forEach items _entity;
 
         private _backpack = unitBackpack _entity;
         if (not isNull _backpack) then {
