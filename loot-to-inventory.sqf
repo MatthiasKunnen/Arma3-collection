@@ -23,9 +23,12 @@ if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad
         {_entity removeWeapon _x} forEach weapons _entity;
         removeAllWeapons _entity; // To remove magazines, does not remove pistols successfully
 
-        private _backpack = backpack _entity;
-        if !(_backpack isEqualTo "") then {
-            _backpacks pushBack _backpack;
+        private _backpack = unitBackpack _entity;
+        if (not isNull _backpack) then {
+            // Get base backpack name. This prevents content duplication
+            _backpackName = configname (inheritsfrom (configFile >> "CfgVehicles" >> typeOf _backpack));
+            _backpacks pushBack _backpackName;
+            _backpacks append backpackCargo _backpack;
             removeBackpackGlobal _entity;
         };
 
