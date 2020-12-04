@@ -2,7 +2,8 @@
 
 _target = cursortarget;
 _radius = 5;
-_nearObjects = nearestObjects [player, ["GroundWeaponHolder", "WeaponHolderSimulated", "Man"], _radius];
+_groundTypes = ["GroundWeaponHolder", "WeaponHolderSimulated"];
+_nearObjects = nearestObjects [player, _groundTypes + ["Man"], _radius];
 
 if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad") == 0 && alive _target) then {
     systemChat "No target";
@@ -123,7 +124,7 @@ fnc_inherits_from_weapon = {
         {_entity unlinkItem _x;} forEach assignedItems _entity; // removeAllAssignedItems does not work properly
     };
 
-    if (alive _entity && (_entity isKindOf "GroundWeaponHolder" || _entity isKindOf "WeaponHolderSimulated")) then {
+    if (alive _entity && (_groundTypes findIf {_entity isKindOf _x} >= 0)) then {
         [_target, _entity] call fnc_extract_weapons;
         {
             // Handle things in backpacks/uniforms/vests
