@@ -9,6 +9,12 @@ if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad
     _nearObjects = [];
 };
 
+// Returns the base name of the given _vehicle name.
+fnc_get_base_vehicle_name = {
+    params ["_vehicle"];
+    configname (inheritsfrom (configFile >> "CfgVehicles" >> _vehicle))
+};
+
 // Put all weapons and their attachments/magazines into the target
 fnc_extract_weapons = {
     params ["_target", "_holder"];
@@ -62,7 +68,7 @@ fnc_inherits_from_weapon = {
         private _backpack = unitBackpack _entity;
         if (not isNull _backpack) then {
             // Get base backpack name. This prevents content duplication
-            _backpackName = configname (inheritsfrom (configFile >> "CfgVehicles" >> typeOf _backpack));
+            _backpackName = [typeof _backpack] call fnc_get_base_vehicle_name;
             _backpacks pushBack _backpackName;
             _backpacks append backpackCargo _backpack;
             removeBackpackGlobal _entity;
