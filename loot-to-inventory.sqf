@@ -1,9 +1,9 @@
 // Look at an object with an inventory and execute this locally (sp) or globally (mp).
 
-_target = cursortarget;
-_radius = 5;
-_groundTypes = ["GroundWeaponHolder", "WeaponHolderSimulated"];
-_nearObjects = nearestObjects [player, _groundTypes + ["Man"], _radius];
+private _target = cursortarget;
+private _radius = 5;
+private _groundTypes = ["GroundWeaponHolder", "WeaponHolderSimulated"];
+private _nearObjects = nearestObjects [player, _groundTypes + ["Man"], _radius];
 
 if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad") == 0 && alive _target) then {
     systemChat "No target";
@@ -24,11 +24,11 @@ fnc_does_vehicle_have_configured_loadout = {
 // Returns the base name of the given _vehicle name.
 fnc_get_base_vehicle_name = {
     params ["_vehicle"];
-    _baseCfg = (configFile >> "cfgVehicles");
-    _cfg = _baseCfg >> _vehicle;
+    private _baseCfg = (configFile >> "cfgVehicles");
+    private _cfg = _baseCfg >> _vehicle;
 
     while {[_cfg] call fnc_does_vehicle_have_configured_loadout} do {
-        _parent = configName (inheritsFrom (_cfg));
+        private _parent = configName (inheritsFrom (_cfg));
         _cfg = _baseCfg >> _parent;
     };
 
@@ -54,8 +54,8 @@ fnc_is_in_weapon_items_list = {
 
     // Binoculars and NVGs both extend "Binocular" yet only the binocular is part of weaponItems so
     // we have to whitelist the NVG.
-    _y = [_item, ["Binocular", "Launcher", "Pistol", "Rifle"]] call fnc_inherits_from_weapon;
-    _n = [_item, ["NVGoggles"]] call fnc_inherits_from_weapon;
+    private _y = [_item, ["Binocular", "Launcher", "Pistol", "Rifle"]] call fnc_inherits_from_weapon;
+    private _n = [_item, ["NVGoggles"]] call fnc_inherits_from_weapon;
     diag_log ["fnc_is_in_weapon_items_list", _item, _y, _n, _y && !_n];
 
     _y && !_n;
@@ -69,10 +69,10 @@ fnc_inherits_from_weapon = {
 };
 
 {
-    _items = [];
-    _magazines = [];
-    _backpacks = [];
-    _entity = _x;
+    private _items = [];
+    private _magazines = [];
+    private _backpacks = [];
+    private _entity = _x;
 
     if (_entity isKindOf "Man" && !alive _entity) then {
         [_target, _entity] call fnc_extract_weapons;
@@ -89,7 +89,7 @@ fnc_inherits_from_weapon = {
         private _backpack = unitBackpack _entity;
         if (not isNull _backpack) then {
             // Get base backpack name. This prevents content duplication
-            _backpackName = [typeof _backpack] call fnc_get_base_vehicle_name;
+            private _backpackName = [typeof _backpack] call fnc_get_base_vehicle_name;
             _backpacks pushBack _backpackName;
             _backpacks append backpackCargo _backpack;
             removeBackpackGlobal _entity;
@@ -128,8 +128,8 @@ fnc_inherits_from_weapon = {
         [_target, _entity] call fnc_extract_weapons;
         {
             // Handle things in backpacks/uniforms/vests
-            _backpackName = [_x select 0] call fnc_get_base_vehicle_name;
-            _container = _x select 1;
+            private _backpackName = [_x select 0] call fnc_get_base_vehicle_name;
+            private _container = _x select 1;
             [_target, _container] call fnc_extract_weapons;
             _magazines append magazinesAmmoCargo _container;
             _items append itemCargo _container;
