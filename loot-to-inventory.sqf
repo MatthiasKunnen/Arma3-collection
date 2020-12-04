@@ -4,7 +4,7 @@ _target = cursortarget;
 _radius = 50;
 _nearObjects = nearestObjects [player, ["GroundWeaponHolder", "WeaponHolderSimulated", "Man"], _radius];
 
-if (typeOf _target isEqualTo "") then {
+if (getNumber(configFile >> "CfgVehicles" >> typeOf cursorTarget >> "maximumLoad") == 0 && alive _target) then {
     systemChat "No target";
     _nearObjects = [];
 };
